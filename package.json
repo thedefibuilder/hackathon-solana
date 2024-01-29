@@ -1,14 +1,14 @@
 {
   "private": true,
-  "license": "MIT",
+  "license": "CC BY-NC-SA 4.0",
   "author": {
-    "name": "Doinel Atanasiu",
-    "email": "doinel1atanasiu@gmail.com",
-    "url": "https://business-link.d1a.app"
+    "name": "DeFi Builder",
+    "email": "hello@defibuilder.com",
+    "url": "https://defibuilder.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/doinel1a/next-ts-shadcn-ui"
+    "url": "https://github.com/thedefibuilder/hackathon-solana"
   },
   "scripts": {
     "postinstall": "husky install && playwright install",

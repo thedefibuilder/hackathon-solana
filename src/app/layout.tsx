@@ -9,6 +9,7 @@ import config from '_config';
 
 import Footer from '@/components/footer';
 import Navbar from '@/components/navbar';
+import NextAuthProvider from '@/providers/next-auth-provider';
 
 export const metadata: Metadata = {
   title: config.metadata.title,
@@ -25,13 +26,15 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang='en' suppressHydrationWarning>
-      <body>
-        <Navbar />
+      <NextAuthProvider>
+        <body>
+          <Navbar />
 
-        {children}
+          {children}
 
-        <Footer />
-      </body>
+          <Footer />
+        </body>
+      </NextAuthProvider>
     </html>
   );
 }

@@ -9,11 +9,13 @@ import { ChatOpenAI } from '@langchain/openai';
 import { env } from '@/env';
 
 export const SUMMARY_SYSTEM_MESSAGE =
-  'Your task is to provide a executive summary for an auditing report. The summary should contain only an overview of the audited protocol, without including key findings and recommendations.';
+  'Your task is to provide a executive summary for an auditing report.' +
+  'The summary should contain only an overview of the rust smart contracts for the Solana blockchain, without including key findings and recommendations.' +
+  'If not enough information is provided, just simply state that there is not enough information to provide a summary .';
 
 export function summaryAgent() {
   const userMessage =
-    'Generate a summary given the following information (docs or code) about the protocol: {info}';
+    'Generate a summary given the following information (docs or code) about the smart contracts involved: {info}';
 
   const prompt = new ChatPromptTemplate({
     promptMessages: [

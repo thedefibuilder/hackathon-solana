@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     });
 
     const allFiles = projectTree.data.tree
-      .filter((item) => item.type == 'file')
+      .filter((item) => item.type == 'blob')
       .map((file) => file.path);
 
     const selectedFilesResponse = await fileAgent().invoke({

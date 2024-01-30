@@ -19,12 +19,14 @@ export const env = createEnv({
         (str) => !str.includes('YOUR_MYSQL_URL_HERE'),
         'You forgot to change the default URL'
       ),
+    OPENAI_API_KEY: z.string(),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development')
   },
   client: {
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },
   runtimeEnv: {
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET,
     GITHUB_PROVIDER_CLIENT_ID: process.env.GITHUB_PROVIDER_CLIENT_ID,

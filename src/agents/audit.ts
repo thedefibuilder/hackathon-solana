@@ -25,15 +25,16 @@ export const auditJsonSchema = z.object({
     .describe('List of issues found in the smart contract')
 });
 
+export const AUDITOR_SYSTEM_MESSAGE =
+  'Your task is to analyze and assess Solana smart contracts for auditing purposes by following the code given from the user.';
+
 export function auditorAgent() {
-  const systemMessage =
-    'Your task is to analyze and assess Solana smart contracts for auditing purposes by identifying the severity of the vulnerabilities, summarize them in a short title and description. The report should be generated in JSON format and should always follow the provided schema.';
   const userMessage =
     'Generate a smart contract auditing report in JSON format by carefully including the title, severity, location and description of the issue, where applicable provide a recommendation, given the following code: {code}';
 
   const prompt = new ChatPromptTemplate({
     promptMessages: [
-      SystemMessagePromptTemplate.fromTemplate(systemMessage),
+      SystemMessagePromptTemplate.fromTemplate(AUDITOR_SYSTEM_MESSAGE),
       HumanMessagePromptTemplate.fromTemplate(userMessage)
     ],
     inputVariables: ['code']

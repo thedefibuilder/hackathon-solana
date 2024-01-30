@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@langchain/core": "^0.1.18",
+    "@langchain/openai": "^0.0.13",
     "@next-auth/prisma-adapter": "^1.0.7",
     "@planetscale/database": "^1.14.0",
     "@prisma/adapter-planetscale": "^5.8.1",
@@ -37,6 +38,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "date-fns": "^3.3.1",
+    "langchain": "^0.1.10",
     "lucide-react": "^0.314.0",
     "next": "14.1.0",
     "next-auth": "^4.24.5",
@@ -46,7 +48,8 @@
     "react-dom": "18.2.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
-    "zod": "^3.22.4"
+    "zod": "^3.22.4",
+    "zod-to-json-schema": "^3.22.4"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.5.0",

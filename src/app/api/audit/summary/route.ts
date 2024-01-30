@@ -14,6 +14,7 @@ export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as TSummaryRequest;
     const userId = body.userId;
+    const repoName = body.repoName;
 
     const account = await db.account.findFirstOrThrow({
       where: {
@@ -23,22 +24,15 @@ export async function POST(request: NextRequest) {
     const octokit = new Octokit({
       auth: account.access_token
     });
-
-    const users = await octokit.rest.users.getAuthenticated();
-    console.log(users.data.login);
-
-    const response = await octokit.rest.repos.getContent({
-      owner: users.data.login,
-      repo: body.repoName,
-      path: '',
-      headers: {
-        'X-GitHub-Api-Version': '2022-11-28'
-      }
+    const user = await octokit.rest.users.getAuthenticated();
+    const response = await octokit.rest.git.getTree({
+      owner: user.data.login,
+      repo: repoName,
+      tree_sha: 'main',
+      recursive: 'true'
     });
 
-    // TODO: Add logic to parse the response and return the summary
-
-    return NextResponse.json({ output: response }, { status: 200 });
+    return NextResponse.json({ data: response.data }, { status: response.status });
   } catch (error: unknown) {
     return NextResponse.json({ error }, { status: 500 });
   }

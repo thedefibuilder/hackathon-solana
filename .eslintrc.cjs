@@ -52,8 +52,11 @@ module.exports = {
       {
         checksVoidReturn: { attributes: false }
       }
-    ]
+    ],
+    // end
+
+    // unicorn
+    'unicorn/no-null': 'off'
     // end
   }
 };
-

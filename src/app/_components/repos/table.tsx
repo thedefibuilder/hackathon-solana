@@ -10,10 +10,9 @@ const tableHeader = ['Name', 'Owner', 'Visibility', 'Action'];
 
 type TReposTableProperties = {
   octokit: Octokit;
-  ghUsername: string;
 };
 
-export default async function ReposTable({ octokit, ghUsername }: TReposTableProperties) {
+export default async function ReposTable({ octokit }: TReposTableProperties) {
   const userRepos = await getUserReposAction(octokit);
 
   return (
@@ -33,7 +32,7 @@ export default async function ReposTable({ octokit, ghUsername }: TReposTablePro
             <ReposTableRow
               key={repo.id}
               octokit={octokit}
-              ghUsername={ghUsername}
+              ghUsername={repo.owner.login}
               name={repo.name}
               owner={repo.owner.login}
               visibility={repo.visibility ?? ''}

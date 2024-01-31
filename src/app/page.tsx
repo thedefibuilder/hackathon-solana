@@ -20,11 +20,9 @@ export default async function Home() {
     auth: account?.access_token
   });
 
-  const ghUser = await octokit.rest.users.getAuthenticated();
-
   return (
     <main className='flex h-full w-full flex-col items-center justify-center overflow-hidden p-5'>
-      <ReposTable octokit={octokit} ghUsername={ghUser.data.login} />
+      <ReposTable octokit={octokit} />
     </main>
   );
 }

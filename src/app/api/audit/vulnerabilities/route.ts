@@ -84,7 +84,7 @@ export async function POST(request: NextRequest) {
       const auditResponse = await auditorAgent().invoke({
         code: 'FILENAME: ' + file.path + '\nCODE:' + file.content
       });
-      issues.push(auditJsonSchema.parse(auditResponse).issues);
+      issues.push(...auditJsonSchema.parse(auditResponse).issues);
     }
 
     return NextResponse.json({ data: issues }, { status: 200 });

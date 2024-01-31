@@ -5,6 +5,7 @@ import { z } from 'zod';
 
 export const env = createEnv({
   server: {
+    OPENAI_API_KEY: z.string(),
     NEXTAUTH_URL: z.preprocess(
       (str) => process.env.VERCEL_URL ?? str,
       process.env.VERCEL ? z.string() : z.string().url()
@@ -19,7 +20,6 @@ export const env = createEnv({
         (str) => !str.includes('YOUR_MYSQL_URL_HERE'),
         'You forgot to change the default URL'
       ),
-    OPENAI_API_KEY: z.string(),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development')
   },
   client: {

@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { Octokit } from 'octokit';
 
-import { AUDITOR_SYSTEM_MESSAGE } from '@/agents/audit';
+import { auditJsonSchema, AUDITOR_SYSTEM_MESSAGE, auditorAgent } from '@/agents/audit';
 import { fileAgent, fileAgentSchema } from '@/agents/file';
 import { db } from '@/server/db';
 
@@ -27,17 +27,20 @@ export async function POST(request: NextRequest) {
       auth: account.access_token
     });
     const user = await octokit.rest.users.getAuthenticated();
+    const repoDetails = await octokit.rest.repos.get({
+      owner: user.data.login,
+      repo: repoName
+    });
     const projectTree = await octokit.rest.git.getTree({
       owner: user.data.login,
       repo: repoName,
-      tree_sha: 'main',
+      tree_sha: repoDetails.data.default_branch,
       recursive: 'true'
     });
 
     const allFiles = projectTree.data.tree
-      .filter((item) => item.type == 'blob')
+      .filter((file) => file.type == 'blob' && file.path?.endsWith('.rs'))
       .map((file) => file.path);
-
     const selectedFilesResponse = await fileAgent().invoke({
       task: AUDITOR_SYSTEM_MESSAGE,
       files: allFiles
@@ -72,10 +75,15 @@ export async function POST(request: NextRequest) {
       })
     );
 
-    // give the contents to auditor agent and get the result
-    console.log(selectedFilesContent);
+    const issues = [];
+    for (const file of selectedFilesContent) {
+      const auditResponse = await auditorAgent().invoke({
+        code: 'FILENAME: ' + file.path + '\nCODE:' + file.content
+      });
+      issues.push(auditJsonSchema.parse(auditResponse).issues);
+    }
 
-    return NextResponse.json({ output: 'Hello Brat!' }, { status: 200 });
+    return NextResponse.json({ data: issues }, { status: 200 });
   } catch (error: unknown) {
     return NextResponse.json({ error }, { status: 500 });
   }

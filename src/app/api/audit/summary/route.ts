@@ -27,10 +27,14 @@ export async function POST(request: NextRequest) {
       auth: account.access_token
     });
     const user = await octokit.rest.users.getAuthenticated();
+    const repoDetails = await octokit.rest.repos.get({
+      owner: user.data.login,
+      repo: repoName
+    });
     const projectTree = await octokit.rest.git.getTree({
       owner: user.data.login,
       repo: repoName,
-      tree_sha: 'main',
+      tree_sha: repoDetails.data.default_branch,
       recursive: 'true'
     });
 

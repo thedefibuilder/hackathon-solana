@@ -46,10 +46,15 @@ async function getRepoTreeAction(octokit: Octokit, ghUsername: string, repoName:
   let repoTree = null;
 
   try {
+    const repoDetails = await octokit.rest.repos.get({
+      owner: ghUsername,
+      repo: repoName
+    });
+
     repoTree = await octokit.rest.git.getTree({
       owner: ghUsername,
       repo: repoName,
-      tree_sha: 'main',
+      tree_sha: repoDetails.data.default_branch,
       recursive: 'true'
     });
   } catch (error: unknown) {

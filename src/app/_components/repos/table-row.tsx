@@ -10,7 +10,6 @@ type TReposTableRowProperties = {
   octokit: Octokit;
   ghUsername: string;
   name: string;
-  owner: string;
   visibility: string;
 };
 
@@ -18,7 +17,6 @@ export default async function ReposTableRow({
   octokit,
   ghUsername,
   name,
-  owner,
   visibility
 }: TReposTableRowProperties) {
   const repoTree = await getRepoTreeAction(octokit, ghUsername, name);
@@ -31,7 +29,7 @@ export default async function ReposTableRow({
       })}
     >
       <TableCell className='font-medium'>{name}</TableCell>
-      <TableCell>{owner}</TableCell>
+      <TableCell>{ghUsername}</TableCell>
       <TableCell>{visibility}</TableCell>
       <TableCell>
         <Button disabled={!isRepoAuditable}>Audit</Button>

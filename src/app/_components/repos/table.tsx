@@ -34,7 +34,6 @@ export default async function ReposTable({ octokit }: TReposTableProperties) {
               octokit={octokit}
               ghUsername={repo.owner.login}
               name={repo.name}
-              owner={repo.owner.login}
               visibility={repo.visibility ?? ''}
             />
           ))}

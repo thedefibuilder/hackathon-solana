@@ -5,39 +5,41 @@ import { Octokit } from 'octokit';
 
 import { auditJsonSchema, AUDITOR_SYSTEM_MESSAGE, auditorAgent } from '@/agents/audit';
 import { fileAgent, fileAgentSchema } from '@/agents/file';
+import { getServerAuthSession } from '@/server/auth';
 import { db } from '@/server/db';
 
 export type TVulnerabilityRequest = {
-  userId: string;
   repoName: string;
+  ghUserName: string;
 };
 
 export async function POST(request: NextRequest) {
   try {
     const body = (await request.json()) as TVulnerabilityRequest;
-    const userId = body.userId;
     const repoName = body.repoName;
+    const ghUserName = body.ghUserName;
+    const session = await getServerAuthSession();
 
     const account = await db.account.findFirstOrThrow({
       where: {
-        userId
+        userId: session?.user.id
       }
     });
     const octokit = new Octokit({
       auth: account.access_token
     });
-    const user = await octokit.rest.users.getAuthenticated();
     const repoDetails = await octokit.rest.repos.get({
-      owner: user.data.login,
+      owner: ghUserName,
       repo: repoName
     });
     const projectTree = await octokit.rest.git.getTree({
-      owner: user.data.login,
+      owner: ghUserName,
       repo: repoName,
       tree_sha: repoDetails.data.default_branch,
       recursive: 'true'
     });
 
+    // Filter out unnecessary files through the agent
     const allFiles = projectTree.data.tree
       .filter((file) => file.type == 'blob' && file.path?.endsWith('.rs'))
       .map((file) => file.path);
@@ -47,10 +49,11 @@ export async function POST(request: NextRequest) {
     });
     const selectedFiles = fileAgentSchema.parse(selectedFilesResponse).files;
 
+    // Get the content of the selected files
     const selectedFilesContent = await Promise.all(
       selectedFiles.map(async (file) => {
         const fileContentResponse = await octokit.rest.repos.getContent({
-          owner: user.data.login,
+          owner: ghUserName,
           repo: repoName,
           path: file
         });
@@ -75,6 +78,7 @@ export async function POST(request: NextRequest) {
       })
     );
 
+    // Audit the code from selected files
     const issues = [];
     for (const file of selectedFilesContent) {
       const auditResponse = await auditorAgent().invoke({

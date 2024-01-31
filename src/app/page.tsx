@@ -24,8 +24,6 @@ export default async function Home() {
 
   return (
     <main className='flex h-full w-full flex-col items-center justify-center overflow-hidden p-5'>
-      <h1 className='text-2xl'>DeFi Builder | Solana AI Auditor</h1>
-
       <ReposTable octokit={octokit} ghUsername={ghUser.data.login} />
     </main>
   );

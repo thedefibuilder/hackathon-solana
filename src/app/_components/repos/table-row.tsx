@@ -2,9 +2,10 @@ import React from 'react';
 
 import { type Octokit } from 'octokit';
 
-import { Button } from '@/components/ui/button';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
+
+import AuditDialog from './audit-dialog';
 
 type TReposTableRowProperties = {
   octokit: Octokit;
@@ -32,7 +33,11 @@ export default async function ReposTableRow({
       <TableCell>{ghUsername}</TableCell>
       <TableCell>{visibility}</TableCell>
       <TableCell>
-        <Button disabled={!isRepoAuditable}>Audit</Button>
+        <AuditDialog
+          ghUsername={ghUsername}
+          repoName={name}
+          buttonProperties={{ disabled: !isRepoAuditable }}
+        />
       </TableCell>
     </TableRow>
   );

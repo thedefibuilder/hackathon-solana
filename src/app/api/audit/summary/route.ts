@@ -51,8 +51,16 @@ export async function POST(request: NextRequest) {
           repo: repoName,
           path: file
         });
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-        return Buffer.from((fileContentResponse.data as any).content, 'base64').toString('utf8');
+
+        if (
+          fileContentResponse.status === 200 &&
+          typeof fileContentResponse.data === 'object' &&
+          'content' in fileContentResponse.data &&
+          typeof fileContentResponse.data.content === 'string'
+        ) {
+          return Buffer.from(fileContentResponse.data.content, 'base64').toString('utf8');
+        }
+        return '';
       })
     );
     const summary = await summaryAgent().invoke({

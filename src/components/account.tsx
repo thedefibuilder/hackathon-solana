@@ -6,6 +6,8 @@ import { format } from 'date-fns';
 import { Github } from 'lucide-react';
 import { signIn, signOut, useSession } from 'next-auth/react';
 
+import { fnsDateAndTimeFormat } from '@/constants/misc';
+
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { Button } from './ui/button';
 import {
@@ -18,14 +20,11 @@ import {
 } from './ui/dropdown-menu';
 import { Skeleton } from './ui/skeleton';
 
-// eslint-disable-next-line quotes
-const dateFormat = "MMM d ''yy ~ h:mm a";
-
 export default function Account() {
   const { data: session, status } = useSession();
 
   const sessionExpires = session?.expires ? new Date(session?.expires).toString() : new Date();
-  const formattedSessionExpires = format(sessionExpires, dateFormat);
+  const formattedSessionExpires = format(sessionExpires, fnsDateAndTimeFormat);
 
   if (status === 'loading') {
     return <Skeleton className='h-10 w-24' />;

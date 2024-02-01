@@ -10,16 +10,13 @@ import { db } from '@/server/db';
 
 export type TSummaryRequest = {
   repoName: string;
-  ghUserName: string;
+  ghUsername: string;
 };
 
 export async function POST(request: NextRequest) {
   try {
-    const body = (await request.json()) as TSummaryRequest;
-    const repoName = body.repoName;
-    const ghUserName = body.ghUserName;
+    const { repoName, ghUsername } = (await request.json()) as TSummaryRequest;
     const session = await getServerAuthSession();
-
     const account = await db.account.findFirstOrThrow({
       where: {
         userId: session?.user.id
@@ -29,11 +26,11 @@ export async function POST(request: NextRequest) {
       auth: account.access_token
     });
     const repoDetails = await octokit.rest.repos.get({
-      owner: ghUserName,
+      owner: ghUsername,
       repo: repoName
     });
     const projectTree = await octokit.rest.git.getTree({
-      owner: ghUserName,
+      owner: ghUsername,
       repo: repoName,
       tree_sha: repoDetails.data.default_branch,
       recursive: 'true'
@@ -51,7 +48,7 @@ export async function POST(request: NextRequest) {
     const selectedFilesContent = await Promise.all(
       selectedFiles.map(async (file) => {
         const fileContentResponse = await octokit.rest.repos.getContent({
-          owner: ghUserName,
+          owner: ghUsername,
           repo: repoName,
           path: file
         });

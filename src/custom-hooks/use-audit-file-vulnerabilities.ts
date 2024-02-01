@@ -1,9 +1,13 @@
 import { useCallback, useState } from 'react';
 
+import type { TVulnerability } from '@/agents/audit';
+
 export default function useAuditFileVulnerabilities(ghUsername: string, repoName: string) {
   const [isFileVulnerabilitiesLoading, setIsFileVulnerabilitiesLoading] = useState(true);
   const [isFileVulnerabilitiesError, setIsFileVulnerabilitiesError] = useState(false);
-  const [fileVulnerabilitiesData, setFileVulnerabilitiesData] = useState<string[] | null>(null);
+  const [fileVulnerabilitiesData, setFileVulnerabilitiesData] = useState<TVulnerability[] | null>(
+    null
+  );
 
   const getFileVulnerabilities = useCallback(
     async (filePath: string) => {
@@ -25,14 +29,14 @@ export default function useAuditFileVulnerabilities(ghUsername: string, repoName
             json.data &&
             Array.isArray(json.data)
           ) {
-            const data = json.data;
+            const data = json.data as TVulnerability[];
 
             setTimeout(() => {
               setIsFileVulnerabilitiesLoading(false);
               setIsFileVulnerabilitiesError(false);
               setFileVulnerabilitiesData(data);
 
-              console.log('VULNERABILITIES DATA', json.data);
+              console.log('VULNERABILITIES DATA', filePath, json.data);
             }, 5000);
 
             return;

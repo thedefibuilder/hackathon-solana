@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useState } from 'react';
+import React, { useState } from 'react';
 
 import type { ButtonProperties } from '@/components/ui/button';
 
@@ -19,6 +19,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fnsDateFormat } from '@/constants/misc';
+import useAuditFileVulnerabilities from '@/custom-hooks/use-audit-file-vulnerabilities';
 import useAuditMethodology from '@/custom-hooks/use-audit-methodology';
 import useAuditSummary from '@/custom-hooks/use-audit-summary';
 
@@ -68,56 +69,13 @@ export default function AuditDialog({
     getSummary
   } = useAuditSummary(ghUsername, repoName);
 
-  const [isVulnerabilitiesLoading, setIsVulnerabilitiesLoading] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isVulnerabilitiesError, setIsVulnerabilitiesError] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [vulnerabilitiesData, setVulnerabilitiesData] = useState<string[] | null>(null);
-
-  const getVulnerabilities = useCallback(async () => {
-    try {
-      setIsVulnerabilitiesLoading(true);
-
-      const response = await fetch('/api/audit/vulnerabilities', {
-        method: 'POST',
-        body: JSON.stringify({ ghUsername, repoName })
-      });
-
-      if (response.ok) {
-        const json: unknown = await response.json();
-
-        if (
-          json &&
-          typeof json === 'object' &&
-          'data' in json &&
-          json.data &&
-          Array.isArray(json.data)
-        ) {
-          const data = json.data;
-
-          setTimeout(() => {
-            setIsVulnerabilitiesLoading(false);
-            setIsVulnerabilitiesError(false);
-            setVulnerabilitiesData(data);
-
-            console.log('VULNERABILITIES DATA', json.data);
-          }, 5000);
-
-          return;
-        }
-      }
-
-      setIsVulnerabilitiesLoading(false);
-      setIsVulnerabilitiesError(true);
-      setVulnerabilitiesData(null);
-    } catch (error: unknown) {
-      setIsVulnerabilitiesLoading(false);
-      setIsVulnerabilitiesError(true);
-      setVulnerabilitiesData(null);
-
-      console.error('ERROR FETCHING VULNERABILITIES', error);
-    }
-  }, [ghUsername, repoName]);
+  // prettier-ignore
+  const {
+    isFileVulnerabilitiesLoading,
+    isFileVulnerabilitiesError,
+    fileVulnerabilitiesData,
+    getFileVulnerabilities
+  } = useAuditFileVulnerabilities(ghUsername, repoName);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -131,7 +89,7 @@ export default function AuditDialog({
 
             getSummary().catch((error: unknown) => console.error('ERROR FETCHING SUMMARY', error));
 
-            getVulnerabilities().catch((error: unknown) =>
+            getFileVulnerabilities('test').catch((error: unknown) =>
               console.error('ERROR FETCHING VULNERABILITIES', error)
             );
           }}
@@ -167,7 +125,7 @@ export default function AuditDialog({
               value={ETabs.vulnerabilities}
               className='flex w-1/3 items-center justify-center gap-x-2.5'
             >
-              {isVulnerabilitiesLoading ? <Loader2 className='h-5 w-5 animate-spin' /> : null}
+              {isFileVulnerabilitiesLoading ? <Loader2 className='h-5 w-5 animate-spin' /> : null}
               {ETabs.vulnerabilities}
             </TabsTrigger>
           </TabsList>
@@ -202,7 +160,7 @@ export default function AuditDialog({
             value={ETabs.vulnerabilities}
             className='h-[calc(100%-3rem)] w-full overflow-y-auto rounded-md border border-border p-2.5'
           >
-            {isVulnerabilitiesLoading ? (
+            {isFileVulnerabilitiesLoading ? (
               <div className='relative flex h-full w-full items-center justify-center'>
                 <Skeleton className='h-full w-full rounded-md' />
                 <p className='absolute'>Generating Audit&apos;s {ETabs.vulnerabilities}</p>

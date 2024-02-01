@@ -20,6 +20,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fnsDateFormat } from '@/constants/misc';
 import useAuditMethodology from '@/custom-hooks/use-audit-methodology';
+import useAuditSummary from '@/custom-hooks/use-audit-summary';
 
 const assessmentStartDate = format(new Date('Mon Jan 15 2024'), fnsDateFormat);
 const assessmentEndDate = format(new Date(), fnsDateFormat);
@@ -59,10 +60,13 @@ export default function AuditDialog({
     getMethodology 
   } = useAuditMethodology();
 
-  const [isSummaryLoading, setIsSummaryLoading] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isSummaryError, setIsSummaryError] = useState(true);
-  const [summaryData, setSummaryData] = useState<string | null>(null);
+  // prettier-ignore
+  const {
+    isSummaryLoading,
+    isSummaryError,
+    summaryData,
+    getSummary
+  } = useAuditSummary(ghUsername, repoName);
 
   const [isVulnerabilitiesLoading, setIsVulnerabilitiesLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -70,54 +74,9 @@ export default function AuditDialog({
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [vulnerabilitiesData, setVulnerabilitiesData] = useState<string[] | null>(null);
 
-  const getSummary = useCallback(async () => {
-    try {
-      setIsSummaryLoading(true);
-
-      const response = await fetch('/api/audit/summary', {
-        method: 'POST',
-        body: JSON.stringify({ ghUsername, repoName })
-      });
-
-      if (response.ok) {
-        const json: unknown = await response.json();
-
-        if (
-          json &&
-          typeof json === 'object' &&
-          'data' in json &&
-          json.data &&
-          typeof json.data === 'string'
-        ) {
-          const data = json.data;
-
-          setTimeout(() => {
-            setIsSummaryLoading(false);
-            setIsSummaryError(false);
-            setSummaryData(data);
-
-            console.log('SUMMARY DATA', json.data);
-          }, 7000);
-
-          return;
-        }
-      }
-
-      setIsSummaryLoading(false);
-      setIsSummaryError(true);
-      setSummaryData(null);
-    } catch (error: unknown) {
-      setIsSummaryLoading(false);
-      setIsSummaryError(true);
-      setSummaryData(null);
-
-      console.error('ERROR FETCHING SUMMARY', error);
-    }
-  }, [ghUsername, repoName]);
-
   const getVulnerabilities = useCallback(async () => {
     try {
-      setIsSummaryLoading(true);
+      setIsVulnerabilitiesLoading(true);
 
       const response = await fetch('/api/audit/vulnerabilities', {
         method: 'POST',
@@ -148,13 +107,13 @@ export default function AuditDialog({
         }
       }
 
-      setIsSummaryLoading(false);
-      setIsSummaryError(true);
-      setSummaryData(null);
+      setIsVulnerabilitiesLoading(false);
+      setIsVulnerabilitiesError(true);
+      setVulnerabilitiesData(null);
     } catch (error: unknown) {
-      setIsSummaryLoading(false);
-      setIsSummaryError(true);
-      setSummaryData(null);
+      setIsVulnerabilitiesLoading(false);
+      setIsVulnerabilitiesError(true);
+      setVulnerabilitiesData(null);
 
       console.error('ERROR FETCHING VULNERABILITIES', error);
     }

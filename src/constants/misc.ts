@@ -2,4 +2,10 @@
 const fnsDateFormat = "MMM d ''yy";
 const fnsDateAndTimeFormat = `${fnsDateFormat} ~ h:mm a`;
 
-export { fnsDateFormat, fnsDateAndTimeFormat };
+enum ETabs {
+  methodology = 'Methodology',
+  summary = 'Summary',
+  vulnerabilities = 'Vulnerabilities'
+}
+
+export { fnsDateFormat, fnsDateAndTimeFormat, ETabs };

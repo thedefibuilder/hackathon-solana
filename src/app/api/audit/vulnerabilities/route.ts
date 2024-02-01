@@ -1,3 +1,4 @@
+import type { TVulnerability } from '@/agents/audit';
 import type { NextRequest } from 'next/server';
 
 import { NextResponse } from 'next/server';
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
     );
 
     // Audit the code from selected files
-    const issues = [];
+    const issues: TVulnerability[] = [];
     for (const file of selectedFilesContent) {
       const auditResponse = await auditorAgent().invoke({
         code: 'FILENAME: ' + file.path + '\nCODE:' + file.content

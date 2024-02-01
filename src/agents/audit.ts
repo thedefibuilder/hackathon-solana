@@ -25,6 +25,8 @@ export const auditJsonSchema = z.object({
     .describe('List of issues found in the smart contract')
 });
 
+export type TVulnerability = z.infer<typeof auditJsonSchema.shape.issues.element>;
+
 export const AUDITOR_SYSTEM_MESSAGE =
   'Your task is to analyze and assess Solana smart contracts for auditing purposes by following the code given from the user.';
 

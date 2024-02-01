@@ -17,10 +17,11 @@ import {
 } from '@/components/ui/dialog';
 import { Tabs, TabsList } from '@/components/ui/tabs';
 import { ETabs, fnsDateFormat } from '@/constants/misc';
-import useAuditFileVulnerabilities from '@/custom-hooks/use-audit-file-vulnerabilities';
+import useAuditFiles from '@/custom-hooks/use-audit-files';
 import useAuditMethodology from '@/custom-hooks/use-audit-methodology';
 import useAuditSummary from '@/custom-hooks/use-audit-summary';
 
+import FileRow from '../file-row';
 import { TabContent } from '../tabs/content';
 import TabTrigger from '../tabs/trigger';
 
@@ -40,10 +41,7 @@ export default function AuditDialog({
 }: TAuditDialogProperties) {
   /*
     TODO
-    - Finish UI & Vulnerabilities validation;
     - Handle errors;
-    - Refactor methods to cache methods results;
-      - Add button inside Dialog to start a new audit;
     - Download Audit PDF Document;
   */
 
@@ -66,12 +64,12 @@ export default function AuditDialog({
   } = useAuditSummary(ghUsername, repoName);
 
   // prettier-ignore
-  const {
-    isFileVulnerabilitiesLoading,
-    isFileVulnerabilitiesError,
-    fileVulnerabilitiesData,
-    getFileVulnerabilities
-  } = useAuditFileVulnerabilities(ghUsername, repoName);
+  const { 
+    isFilesLoading, 
+    isFilesError, 
+    filesData, 
+    getFiles 
+  } = useAuditFiles(ghUsername, repoName);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -79,15 +77,9 @@ export default function AuditDialog({
         <Button
           {...buttonProperties}
           onClick={() => {
-            getMethodology().catch((error: unknown) =>
-              console.error('ERROR FETCHING METHODOLOGY', error)
-            );
-
-            getSummary().catch((error: unknown) => console.error('ERROR FETCHING SUMMARY', error));
-
-            getFileVulnerabilities('test').catch((error: unknown) =>
-              console.error('ERROR FETCHING VULNERABILITIES', error)
-            );
+            getMethodology();
+            getSummary();
+            getFiles();
           }}
         >
           Audit
@@ -105,7 +97,7 @@ export default function AuditDialog({
           <TabsList className='h-10 w-full'>
             <TabTrigger value={ETabs.methodology} isLoading={isMethodologyLoading} />
             <TabTrigger value={ETabs.summary} isLoading={isSummaryLoading} />
-            <TabTrigger value={ETabs.vulnerabilities} isLoading={isFileVulnerabilitiesLoading} />
+            <TabTrigger value={ETabs.vulnerabilities} isLoading={isFilesLoading} />
           </TabsList>
 
           <TabContent
@@ -122,17 +114,20 @@ export default function AuditDialog({
 
           <TabContent
             value={ETabs.vulnerabilities}
-            isLoading={isFileVulnerabilitiesLoading}
-            isError={isFileVulnerabilitiesError}
+            isLoading={isFilesLoading}
+            isError={isFilesError}
           >
-            <ul className='h-full w-full'>
-              {/* DISABLED TO AVOID ESLINT ERRORS - NEEDS VALIDATION
-                  {vulnerabilitiesData?.map((vulnerability) => (
-                    <li key={vulnerability[0].title.toLowerCase().replaceAll(' ', '-')}>
-                      {vulnerability[0].title}
-                    </li>
-                  ))}
-                */}
+            <ul className='flex h-full w-full flex-col gap-y-2.5'>
+              {filesData?.map((filePath) =>
+                filePath ? (
+                  <FileRow
+                    key={filePath}
+                    ghUsername={ghUsername}
+                    repoName={repoName}
+                    filePath={filePath}
+                  />
+                ) : null
+              )}
             </ul>
           </TabContent>
         </Tabs>

@@ -27,7 +27,6 @@ export async function POST(request: NextRequest) {
       auth: account.access_token
     });
 
-    // Get the content of the selected files
     const fileContentResponse = await octokit.rest.repos.getContent({
       owner: ghUsername,
       repo: repoName,
@@ -38,9 +37,7 @@ export async function POST(request: NextRequest) {
       fileContentResponse.status === 200 &&
       typeof fileContentResponse.data === 'object' &&
       'content' in fileContentResponse.data &&
-      typeof fileContentResponse.data.content === 'string' &&
-      'path' in fileContentResponse.data &&
-      typeof fileContentResponse.data.path === 'string'
+      typeof fileContentResponse.data.content === 'string'
     ) {
       const fileContent = Buffer.from(fileContentResponse.data.content, 'base64').toString('utf8');
       const auditResponse = await auditorAgent().invoke({

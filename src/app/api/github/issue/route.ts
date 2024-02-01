@@ -38,7 +38,6 @@ export async function POST(request: NextRequest) {
       body: issueContent,
       labels: [`audit-${issue.severity.toLowerCase()}`]
     });
-    console.log('Getting 404 above');
     if (issueResponse.status !== 201) {
       throw new Error('Failed to create issue');
     }

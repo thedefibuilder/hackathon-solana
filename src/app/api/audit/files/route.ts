@@ -35,7 +35,6 @@ export async function POST(request: NextRequest) {
       recursive: 'true'
     });
 
-    // Filter out unnecessary files through the agent
     const filePaths = projectTree.data.tree
       .filter((file) => file.type == 'blob' && file.path?.endsWith('.rs'))
       .map((file) => file.path);

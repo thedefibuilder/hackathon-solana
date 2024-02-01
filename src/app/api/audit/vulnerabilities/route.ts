@@ -1,10 +1,11 @@
+import type { TMockedFileKey } from '@/constants/__mocked-responses__';
 import type { NextRequest } from 'next/server';
 
 import { NextResponse } from 'next/server';
 import { Octokit } from 'octokit';
 
 import { auditJsonSchema, auditorAgent } from '@/agents/audit';
-import { mockedVulnerabilities } from '@/constants/__mocked-responses__';
+import { mockedFileVulnerabilities } from '@/constants/__mocked-responses__';
 import { env } from '@/env';
 import { getServerAuthSession } from '@/server/auth';
 import { db } from '@/server/db';
@@ -65,5 +66,10 @@ export async function POST(request: NextRequest) {
     }
   }
 
-  return NextResponse.json({ data: mockedVulnerabilities }, { status: 200 });
+  const { filePath } = (await request.json()) as TVulnerabilityRequest;
+
+  return NextResponse.json(
+    { data: mockedFileVulnerabilities[filePath as TMockedFileKey] },
+    { status: 200 }
+  );
 }

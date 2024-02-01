@@ -19,6 +19,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { fnsDateFormat } from '@/constants/misc';
+import useAuditMethodology from '@/custom-hooks/use-audit-methodology';
 
 const assessmentStartDate = format(new Date('Mon Jan 15 2024'), fnsDateFormat);
 const assessmentEndDate = format(new Date(), fnsDateFormat);
@@ -50,10 +51,13 @@ export default function AuditDialog({
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  const [isMethodologyLoading, setIsMethodologyLoading] = useState(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [isMethodologyError, setIsMethodologyError] = useState(true);
-  const [methodologyData, setMethodologyData] = useState<string | null>(null);
+  // prettier-ignore
+  const { 
+    isMethodologyLoading, 
+    isMethodologyError, 
+    methodologyData, 
+    getMethodology 
+  } = useAuditMethodology();
 
   const [isSummaryLoading, setIsSummaryLoading] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -65,46 +69,6 @@ export default function AuditDialog({
   const [isVulnerabilitiesError, setIsVulnerabilitiesError] = useState(true);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [vulnerabilitiesData, setVulnerabilitiesData] = useState<string[] | null>(null);
-
-  const getMetodology = useCallback(async () => {
-    try {
-      setIsMethodologyLoading(true);
-
-      const response = await fetch('/api/audit/methodology', {
-        method: 'POST'
-      });
-
-      if (response.ok) {
-        const json: unknown = await response.json();
-
-        if (
-          json &&
-          typeof json === 'object' &&
-          'data' in json &&
-          json.data &&
-          typeof json.data === 'string'
-        ) {
-          setIsMethodologyLoading(false);
-          setIsMethodologyError(false);
-          setMethodologyData(json.data);
-
-          console.log('METHODOLOGY DATA', json.data);
-
-          return;
-        }
-      }
-
-      setIsMethodologyLoading(false);
-      setIsMethodologyError(true);
-      setMethodologyData(null);
-    } catch (error: unknown) {
-      setIsMethodologyLoading(false);
-      setIsMethodologyError(true);
-      setMethodologyData(null);
-
-      console.error('ERROR FETCHING METHODOLOGY', error);
-    }
-  }, []);
 
   const getSummary = useCallback(async () => {
     try {
@@ -202,7 +166,7 @@ export default function AuditDialog({
         <Button
           {...buttonProperties}
           onClick={() => {
-            getMetodology().catch((error: unknown) =>
+            getMethodology().catch((error: unknown) =>
               console.error('ERROR FETCHING METHODOLOGY', error)
             );
 

@@ -23,7 +23,7 @@ import useAuditSummary from '@/custom-hooks/use-audit-summary';
 import useAuditVulnerabilities from '@/custom-hooks/use-audit-vulnerabilities';
 
 import { TabContent } from '../tabs/content';
-import FileRow from '../tabs/file-row';
+import FileRow from '../tabs/file/row';
 import TabTrigger from '../tabs/trigger';
 
 const assessmentStartDate = format(new Date('Mon Jan 15 2024'), fnsDateFormat);
@@ -139,7 +139,12 @@ export default function AuditDialog({
           >
             <ul className='flex h-full w-full flex-col gap-y-5'>
               {vulnerabilitiesPromise?.map((promise, index) => (
-                <FileRow key={index} promise={promise} />
+                <FileRow
+                  key={index}
+                  ghUsername={ghUsername}
+                  repoName={repoName}
+                  promise={promise}
+                />
               ))}
             </ul>
           </TabContent>

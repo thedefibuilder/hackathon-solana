@@ -8,12 +8,12 @@ const contactSchema = z.object({
     .email()
     .optional()
     .describe('Email of the maintainer. Optional but recommended.'),
-  git: z.string().url().describe('Git URL of this CIDL repository.')
+  git: z.string().url().optional().describe('Git URL of this CIDL repository.')
 });
 
 const licenseSchema = z.object({
-  name: z.string().describe('Name of the license.'),
-  identifier: z.string().describe('SPDX identifier of the license.')
+  name: z.string().describe('Name of the license. Specify UNLICENSE if not known.'),
+  identifier: z.string().describe('SPDX identifier of the license. Specify UNLICENSE if not known.')
 });
 
 const fieldSchema = z.object({
@@ -116,7 +116,7 @@ const cidlJsonSchema = z.object({
       version: z.string().describe('Version of the smart contract.'),
       summary: z.string().optional().describe('Smart contract description summary.'),
       contact: contactSchema.optional().describe('Contact information for the smart contract.'),
-      license: licenseSchema.describe('License information for the smart contract.')
+      license: licenseSchema.optional().describe('License information for the smart contract.')
     })
     .describe('General information about the CIDL document.'),
   types: z

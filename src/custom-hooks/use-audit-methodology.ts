@@ -43,10 +43,17 @@ export default function useAuditMethodology() {
     }
   }, []);
 
+  const resetMethodology = useCallback(() => {
+    setIsMethodologyLoading(true);
+    setIsMethodologyError(false);
+    setMethodologyData(null);
+  }, []);
+
   return {
     isMethodologyLoading,
     isMethodologyError,
     methodologyData,
-    getMethodology
+    getMethodology,
+    resetMethodology
   };
 }

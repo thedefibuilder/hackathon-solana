@@ -50,10 +50,17 @@ export default function useAuditFiles(ghUsername: string, repoName: string) {
     }
   }, [ghUsername, repoName]);
 
+  const resetFiles = useCallback(() => {
+    setIsFilesLoading(true);
+    setIsFilesError(false);
+    setFilesData(null);
+  }, []);
+
   return {
     isFilesLoading,
     isFilesError,
     filesData,
-    getFiles
+    getFiles,
+    resetFiles
   };
 }

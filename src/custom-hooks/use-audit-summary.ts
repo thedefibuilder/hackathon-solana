@@ -50,10 +50,17 @@ export default function useAuditSummary(ghUsername: string, repoName: string) {
     }
   }, [ghUsername, repoName]);
 
+  const resetSummary = useCallback(() => {
+    setIsSummaryLoading(true);
+    setIsSummaryError(false);
+    setSummaryData(null);
+  }, []);
+
   return {
     isSummaryLoading,
     isSummaryError,
     summaryData,
-    getSummary
+    getSummary,
+    resetSummary
   };
 }

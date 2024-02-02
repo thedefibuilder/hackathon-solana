@@ -47,12 +47,13 @@ export default function AuditDialog({
   */
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  // prettier-ignore
+
   const {
     isMethodologyLoading,
     isMethodologyError,
     methodologyData,
-    getMethodology
+    getMethodology,
+    resetMethodology
   } = useAuditMethodology();
 
   // prettier-ignore
@@ -60,7 +61,8 @@ export default function AuditDialog({
     isSummaryLoading,
     isSummaryError,
     summaryData,
-    getSummary
+    getSummary,
+    resetSummary
   } = useAuditSummary(ghUsername, repoName);
 
   // prettier-ignore
@@ -68,16 +70,29 @@ export default function AuditDialog({
     isFilesLoading,
     isFilesError,
     filesData,
-    getFiles
+    getFiles,
+    resetFiles
   } = useAuditFiles(ghUsername, repoName);
 
   // prettier-ignore
   const {
-    vulnerabilitiesPromise
+    vulnerabilitiesPromise,
+    resetVulnerabilitiesPromise
   } = useAuditVulnerabilities(filesData, ghUsername, repoName);
 
+  function onDialogOpenChange(isOpen: boolean) {
+    if (!isOpen) {
+      resetMethodology();
+      resetSummary();
+      resetFiles();
+      resetVulnerabilitiesPromise();
+    }
+
+    setIsDialogOpen(isOpen);
+  }
+
   return (
-    <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+    <Dialog open={isDialogOpen} onOpenChange={onDialogOpenChange}>
       <DialogTrigger asChild>
         <Button
           {...buttonProperties}

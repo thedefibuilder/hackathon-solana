@@ -21,8 +21,8 @@ import useAuditFiles from '@/custom-hooks/use-audit-files';
 import useAuditMethodology from '@/custom-hooks/use-audit-methodology';
 import useAuditSummary from '@/custom-hooks/use-audit-summary';
 
-import FileRow from '../file-row';
 import { TabContent } from '../tabs/content';
+import FileRow from '../tabs/file-row';
 import TabTrigger from '../tabs/trigger';
 
 const assessmentStartDate = format(new Date('Mon Jan 15 2024'), fnsDateFormat);

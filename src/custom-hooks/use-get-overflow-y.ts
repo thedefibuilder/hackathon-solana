@@ -9,7 +9,6 @@ export default function useGetOverflowY(reference: RefObject<HTMLElement>, conte
     const container = reference.current;
 
     if (container) {
-      console.log('CIao', container);
       const isOverflowing = container.scrollHeight > container.clientHeight;
       setIsOverflowingY(isOverflowing);
     }

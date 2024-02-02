@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+// Solana specific fields are not supported yet.
+// Imports are not supported yet.
+
 const contactSchema = z.object({
   name: z.string().optional().describe('Name of the maintainer. Optional but recommended.'),
   web: z.string().url().optional().describe('URL of the maintainer. Optional but recommended.'),
@@ -26,34 +29,11 @@ const fieldSchema = z.object({
   attributes: z
     .record(z.number())
     .optional()
-    .describe('Attributes defining constraints like max or min values.'),
-  solana: z
-    .object({
-      attributes: z
-        .array(z.string())
-        .optional()
-        .describe('Solana-specific attributes for the field.')
-    })
-    .optional()
-    .describe('Solana-specific extensions for the field.')
+    .describe('Attributes defining constraints like max or min values.')
 });
 
 const typeSchema = z.object({
   summary: z.string().describe('Summary description of the type.'),
-  solana: z
-    .object({
-      owner: z
-        .string()
-        .describe(
-          'Owner program ID, expected owner of the account. Put a placeholder inside <> if not known.'
-        ),
-      seeds: z
-        .array(z.string())
-        .optional()
-        .describe('Array of seeds for generating a derived address.')
-    })
-    .optional()
-    .describe('Solana-specific extensions for the type.'),
   fields: z.array(fieldSchema).describe('Fields within the type.')
 });
 
@@ -62,41 +42,13 @@ const inputSchema = z.object({
   type: z
     .union([z.literal('native'), z.literal('type'), z.literal('extended')])
     .describe('Type of the input, can be native, type, or extended.'),
-  description: z.string().describe('Description of the input parameter.'),
-  solana: z
-    .object({
-      attributes: z
-        .record(z.any())
-        .optional()
-        .describe('Solana-specific attributes to modify the input behavior.'),
-      seeds: z
-        .record(z.string())
-        .optional()
-        .describe('Key-pair value to link signers or inputs to dynamic seeds.'),
-      rentPayer: z.string().optional().describe('Signer that will pay the rent fees.'),
-      rentReceiver: z
-        .string()
-        .optional()
-        .describe('Account that will receive the lamports upon closing.')
-    })
-    .optional()
-    .describe('Solana-specific extensions for the input.')
+  description: z.string().describe('Description of the input parameter.')
 });
 
 const methodSchema = z.object({
   name: z.string().describe('Name of the method.'),
   version: z.string().optional().describe('Version of the method.'),
   summary: z.string().describe('Summary description of the method.'),
-  solana: z
-    .object({
-      defaultPayer: z
-        .boolean()
-        .optional()
-        .describe('Indicates if the method uses a default payer.'),
-      signers: z.array(z.string()).optional().describe('List of signers required by the method.')
-    })
-    .optional()
-    .describe('Solana-specific extensions for the method.'),
   inputs: z.array(inputSchema).optional().describe('List of input parameters for the method.')
 });
 

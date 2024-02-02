@@ -20,6 +20,7 @@ import { ETabs, fnsDateFormat } from '@/constants/misc';
 import useAuditFiles from '@/custom-hooks/use-audit-files';
 import useAuditMethodology from '@/custom-hooks/use-audit-methodology';
 import useAuditSummary from '@/custom-hooks/use-audit-summary';
+import useAuditVulnerabilities from '@/custom-hooks/use-audit-vulnerabilities';
 
 import { TabContent } from '../tabs/content';
 import FileRow from '../tabs/file-row';
@@ -46,13 +47,12 @@ export default function AuditDialog({
   */
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   // prettier-ignore
-  const { 
-    isMethodologyLoading, 
-    isMethodologyError, 
-    methodologyData, 
-    getMethodology 
+  const {
+    isMethodologyLoading,
+    isMethodologyError,
+    methodologyData,
+    getMethodology
   } = useAuditMethodology();
 
   // prettier-ignore
@@ -65,11 +65,16 @@ export default function AuditDialog({
 
   // prettier-ignore
   const { 
-    isFilesLoading, 
-    isFilesError, 
-    filesData, 
-    getFiles 
+    isFilesLoading,
+    isFilesError,
+    filesData,
+    getFiles
   } = useAuditFiles(ghUsername, repoName);
+
+  // prettier-ignore
+  const {
+    vulnerabilitiesPromise
+  } = useAuditVulnerabilities(filesData, ghUsername, repoName);
 
   return (
     <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -118,16 +123,9 @@ export default function AuditDialog({
             isError={isFilesError}
           >
             <ul className='flex h-full w-full flex-col gap-y-2.5'>
-              {filesData?.map((filePath) =>
-                filePath ? (
-                  <FileRow
-                    key={filePath}
-                    ghUsername={ghUsername}
-                    repoName={repoName}
-                    filePath={filePath}
-                  />
-                ) : null
-              )}
+              {vulnerabilitiesPromise?.map((promise, index) => (
+                <FileRow key={index} promise={promise} />
+              ))}
             </ul>
           </TabContent>
         </Tabs>

@@ -8,6 +8,7 @@ import type { TVulnerability } from '@/agents/audit';
 
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
+import useGetOverflowX from '@/custom-hooks/use-get-overflow-x';
 import { cn } from '@/lib/utils';
 
 type TFileRowProperties = {
@@ -17,8 +18,6 @@ type TFileRowProperties = {
 export default function FileRow({ promise }: TFileRowProperties) {
   const filePathContainerReference = useRef<HTMLSpanElement | null>(null);
 
-  const [isXOverflowing, setIsXOverflowing] = useState(false);
-
   const [filePath, setFilePath] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -27,14 +26,10 @@ export default function FileRow({ promise }: TFileRowProperties) {
   const [isError, setIsError] = useState(false);
   const [fileVulnerabilities, setFileVulnerabilities] = useState<TVulnerability[] | null>(null);
 
-  useEffect(() => {
-    const container = filePathContainerReference.current;
-
-    if (container) {
-      const isOverflowing = container.scrollWidth > container.clientWidth;
-      setIsXOverflowing(isOverflowing);
-    }
-  }, []);
+  // prettier-ignore
+  const { 
+    isOverflowingX: isFilePathContainerOverflowingX 
+  } = useGetOverflowX(filePathContainerReference, filePath);
 
   useEffect(() => {
     async function resolvePromise() {
@@ -123,9 +118,10 @@ export default function FileRow({ promise }: TFileRowProperties) {
         <span
           ref={filePathContainerReference}
           className={cn('overflow-x-auto whitespace-nowrap text-sm font-semibold', {
-            'pb-3.5 ': isXOverflowing
+            'pb-3.5 ': isFilePathContainerOverflowingX
           })}
         >
+          {filePath}
           {filePath}
         </span>
       </div>

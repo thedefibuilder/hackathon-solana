@@ -76,8 +76,8 @@ export default function AuditDialog({
 
   // prettier-ignore
   const {
-    vulnerabilitiesPromise,
-    resetVulnerabilitiesPromise
+    vulnerabilitiesPromises,
+    resetVulnerabilitiesPromises
   } = useAuditVulnerabilities(filesData, ghUsername, repoName);
 
   function onDialogOpenChange(isOpen: boolean) {
@@ -85,7 +85,7 @@ export default function AuditDialog({
       resetMethodology();
       resetSummary();
       resetFiles();
-      resetVulnerabilitiesPromise();
+      resetVulnerabilitiesPromises();
     }
 
     setIsDialogOpen(isOpen);
@@ -138,12 +138,12 @@ export default function AuditDialog({
             isError={isFilesError}
           >
             <ul className='flex h-full w-full flex-col gap-y-5'>
-              {vulnerabilitiesPromise?.map((promise, index) => (
+              {vulnerabilitiesPromises?.map((vulnerabilitiesPromise, index) => (
                 <FileRow
                   key={index}
                   ghUsername={ghUsername}
                   repoName={repoName}
-                  promise={promise}
+                  vulnerabilitiesPromise={vulnerabilitiesPromise}
                 />
               ))}
             </ul>

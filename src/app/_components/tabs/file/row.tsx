@@ -19,10 +19,14 @@ import FileVulnerabilities from './vulnerabilities';
 type TFileRowProperties = {
   ghUsername: string;
   repoName: string;
-  promise: Record<string, Promise<Response>>;
+  vulnerabilitiesPromise: Record<string, Promise<Response>>;
 };
 
-export default function FileRow({ ghUsername, repoName, promise }: TFileRowProperties) {
+export default function FileRow({
+  ghUsername,
+  repoName,
+  vulnerabilitiesPromise
+}: TFileRowProperties) {
   const filePathContainerReference = useRef<HTMLSpanElement | null>(null);
 
   const [isRowExpanded, setIsRowExpanded] = useState(false);
@@ -41,7 +45,7 @@ export default function FileRow({ ghUsername, repoName, promise }: TFileRowPrope
 
   useEffect(() => {
     async function resolvePromise() {
-      const entry = Object.entries(promise)[0];
+      const entry = Object.entries(vulnerabilitiesPromise)[0];
 
       if (!entry) return;
 
@@ -87,7 +91,7 @@ export default function FileRow({ ghUsername, repoName, promise }: TFileRowPrope
     }
 
     resolvePromise();
-  }, [promise]);
+  }, [vulnerabilitiesPromise]);
 
   const lowSeverityCount = useMemo(() => {
     if (fileVulnerabilities) {

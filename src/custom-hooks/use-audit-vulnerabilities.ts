@@ -9,8 +9,8 @@ export default function useAuditVulnerabilities(
 ) {
   // prettier-ignore
   const [
-    vulnerabilitiesPromise, 
-    setVulnerabilitiesPromise
+    vulnerabilitiesPromises, 
+    setVulnerabilitiesPromises
   ] = useState<TVulnerabilityPromise[] | null>(null);
 
   useEffect(() => {
@@ -41,16 +41,16 @@ export default function useAuditVulnerabilities(
         return null;
       });
 
-      setVulnerabilitiesPromise(promises.filter(Boolean) as TVulnerabilityPromise[]);
+      setVulnerabilitiesPromises(promises.filter(Boolean) as TVulnerabilityPromise[]);
     }
   }, [ghUsername, repoName, filesData]);
 
-  const resetVulnerabilitiesPromise = useCallback(() => {
-    setVulnerabilitiesPromise(null);
+  const resetVulnerabilitiesPromises = useCallback(() => {
+    setVulnerabilitiesPromises(null);
   }, []);
 
   return {
-    vulnerabilitiesPromise,
-    resetVulnerabilitiesPromise
+    vulnerabilitiesPromises,
+    resetVulnerabilitiesPromises
   };
 }

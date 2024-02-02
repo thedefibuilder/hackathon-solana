@@ -11,16 +11,25 @@ import { ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Textarea } from '@/components/ui/textarea';
 import useGetOverflowX from '@/custom-hooks/use-get-overflow-x';
 import { cn } from '@/lib/utils';
 
+import FileVulnerabilities from './vulnerabilities';
+
 type TFileRowProperties = {
-  promise: Record<string, Promise<Response>>;
+  ghUsername: string;
+  repoName: string;
+  vulnerabilitiesPromise: Record<string, Promise<Response>>;
 };
 
-export default function FileRow({ promise }: TFileRowProperties) {
+export default function FileRow({
+  ghUsername,
+  repoName,
+  vulnerabilitiesPromise
+}: TFileRowProperties) {
   const filePathContainerReference = useRef<HTMLSpanElement | null>(null);
+
+  const [isRowExpanded, setIsRowExpanded] = useState(false);
 
   const [filePath, setFilePath] = useState<string | null>(null);
 
@@ -29,8 +38,6 @@ export default function FileRow({ promise }: TFileRowProperties) {
   const [isError, setIsError] = useState(false);
   const [fileVulnerabilities, setFileVulnerabilities] = useState<TVulnerability[] | null>(null);
 
-  const [isRowExpanded, setIsRowExpanded] = useState(false);
-
   // prettier-ignore
   const { 
     isOverflowingX: isFilePathContainerOverflowingX 
@@ -38,7 +45,7 @@ export default function FileRow({ promise }: TFileRowProperties) {
 
   useEffect(() => {
     async function resolvePromise() {
-      const entry = Object.entries(promise)[0];
+      const entry = Object.entries(vulnerabilitiesPromise)[0];
 
       if (!entry) return;
 
@@ -49,16 +56,16 @@ export default function FileRow({ promise }: TFileRowProperties) {
 
       // eslint-disable-next-line unicorn/consistent-function-scoping
       async function handleResponse(clonedResponse: Response) {
-        const json: unknown = await clonedResponse.json();
+        const responseBody: unknown = await clonedResponse.json();
 
         if (
-          json &&
-          typeof json === 'object' &&
-          'data' in json &&
-          json.data &&
-          Array.isArray(json.data)
+          responseBody &&
+          typeof responseBody === 'object' &&
+          'data' in responseBody &&
+          responseBody.data &&
+          Array.isArray(responseBody.data)
         ) {
-          const data = json.data as TVulnerability[];
+          const data = responseBody.data as TVulnerability[];
           setIsLoading(false);
           setIsError(false);
           setFileVulnerabilities(data);
@@ -84,7 +91,7 @@ export default function FileRow({ promise }: TFileRowProperties) {
     }
 
     resolvePromise();
-  }, [promise]);
+  }, [vulnerabilitiesPromise]);
 
   const lowSeverityCount = useMemo(() => {
     if (fileVulnerabilities) {
@@ -177,46 +184,11 @@ export default function FileRow({ promise }: TFileRowProperties) {
         <>
           <Separator />
 
-          <div className='flex h-full w-full flex-col gap-y-2.5 px-3'>
-            <p className='font-semibold'>Vulnerabilities</p>
-
-            <ul className='flex h-full w-full flex-col gap-y-5'>
-              {fileVulnerabilities?.map((vulnerability, index) => (
-                <li
-                  key={index}
-                  className='flex h-auto w-full flex-col gap-y-2.5 rounded-md border border-border bg-muted/35 p-2.5'
-                >
-                  <p
-                    className={cn('overflow-x-auto whitespace-nowrap text-sm font-medium', {
-                      'text-green-400': vulnerability.severity === 'Low',
-                      'text-yellow-400': vulnerability.severity === 'Medium',
-                      'text-red-400': vulnerability.severity === 'High'
-                    })}
-                  >
-                    {vulnerability.title}
-                  </p>
-
-                  <div className='flex w-full gap-x-5'>
-                    <div className='flex w-1/2 flex-col gap-y-1.5 overflow-hidden'>
-                      <span className='text-xs text-muted-foreground'>Description</span>
-                      <Textarea
-                        value={vulnerability.description}
-                        className='h-40 resize-none focus-visible:ring-0'
-                      />
-                    </div>
-
-                    <div className='flex w-1/2 flex-col gap-y-1.5 overflow-hidden'>
-                      <span className='text-xs text-muted-foreground'>Recommendation</span>
-                      <Textarea
-                        value={vulnerability.recommendation}
-                        className='h-40 resize-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0'
-                      />
-                    </div>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
+          <FileVulnerabilities
+            ghUsername={ghUsername}
+            repoName={repoName}
+            fileVulnerabilities={fileVulnerabilities}
+          />
         </>
       ) : null}
     </li>

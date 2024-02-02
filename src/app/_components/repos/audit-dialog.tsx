@@ -105,7 +105,7 @@ export default function AuditDialog({
           Audit
         </Button>
       </DialogTrigger>
-      <DialogContent className='flex h-[calc(100%-10rem)] w-[calc(100%-10rem)] max-w-[calc(100%-10rem)] flex-col'>
+      <DialogContent className='flex h-[calc(100%-5rem)] max-h-[calc(100%-5rem)] w-[calc(100%-5rem)] max-w-[calc(100%-5rem)] flex-col'>
         <DialogHeader>
           <DialogTitle>Solana AI Auditor</DialogTitle>
           <DialogDescription>
@@ -137,7 +137,7 @@ export default function AuditDialog({
             isLoading={isFilesLoading}
             isError={isFilesError}
           >
-            <ul className='flex h-full w-full flex-col gap-y-2.5'>
+            <ul className='flex h-full w-full flex-col gap-y-5'>
               {vulnerabilitiesPromise?.map((promise, index) => (
                 <FileRow key={index} promise={promise} />
               ))}

@@ -6,8 +6,12 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { TVulnerability } from '@/agents/audit';
 
+import { ChevronDown } from 'lucide-react';
+
+import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Textarea } from '@/components/ui/textarea';
 import useGetOverflowX from '@/custom-hooks/use-get-overflow-x';
 import { cn } from '@/lib/utils';
 
@@ -21,10 +25,11 @@ export default function FileRow({ promise }: TFileRowProperties) {
   const [filePath, setFilePath] = useState<string | null>(null);
 
   const [isLoading, setIsLoading] = useState(true);
-
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isError, setIsError] = useState(false);
   const [fileVulnerabilities, setFileVulnerabilities] = useState<TVulnerability[] | null>(null);
+
+  const [isRowExpanded, setIsRowExpanded] = useState(false);
 
   // prettier-ignore
   const { 
@@ -112,41 +117,108 @@ export default function FileRow({ promise }: TFileRowProperties) {
   }, [fileVulnerabilities]);
 
   return (
-    <li className='flex h-auto w-full items-center justify-between gap-x-5 rounded-md border border-border p-2.5 hover:bg-muted/50'>
-      <div className='flex w-3/4 max-w-[75%] flex-col gap-y-1.5 overflow-hidden'>
-        <span className='text-xs text-muted-foreground'>File path</span>
-        <span
-          ref={filePathContainerReference}
-          className={cn('overflow-x-auto whitespace-nowrap text-sm font-semibold', {
-            'pb-3.5 ': isFilePathContainerOverflowingX
-          })}
-        >
-          {filePath}
-          {filePath}
-        </span>
+    <li
+      className={cn('flex h-auto w-full flex-col gap-y-5 rounded-md border border-border p-2.5', {
+        'bg-muted/25': isRowExpanded,
+        'hover:bg-muted/25': !isRowExpanded
+      })}
+    >
+      <div className='flex h-full w-full items-center justify-between gap-x-5'>
+        <div className='flex w-2/3 max-w-[66.666667%] flex-col gap-y-1.5 overflow-hidden'>
+          <span className='text-xs text-muted-foreground'>File path</span>
+          <span
+            ref={filePathContainerReference}
+            className={cn('overflow-x-auto whitespace-nowrap text-sm font-medium', {
+              'pb-3.5 ': isFilePathContainerOverflowingX
+            })}
+          >
+            {filePath}
+          </span>
+        </div>
+
+        <Separator orientation='vertical' />
+
+        {isLoading ? (
+          <Skeleton className='h-10 w-1/3 max-w-[33.333333%]' />
+        ) : (
+          <div className='flex w-1/3 max-w-[33.333333%] items-center justify-between gap-x-5'>
+            <div className='flex w-full flex-col gap-y-1.5'>
+              <span className='text-xs text-muted-foreground'>Vulnerabilities</span>
+
+              <div className='flex gap-x-2.5'>
+                <span className='w-1/3 text-left text-sm font-semibold text-green-400'>
+                  {lowSeverityCount} Low
+                </span>
+                <span className='w-1/3 text-center text-sm font-semibold text-yellow-400'>
+                  {mediumSeverityCount} Medium
+                </span>
+                <span className='w-1/3 text-right text-sm font-semibold text-red-400'>
+                  {highSeverityCount} High
+                </span>
+              </div>
+            </div>
+
+            <Button
+              variant='ghost'
+              className='h-7 w-7'
+              onClick={() => setIsRowExpanded((previousState) => !previousState)}
+            >
+              <ChevronDown
+                className={cn('h-5 w-5 shrink-0 transition-transform', {
+                  'rotate-180': isRowExpanded
+                })}
+              />
+            </Button>
+          </div>
+        )}
       </div>
 
-      <Separator orientation='vertical' />
+      {isRowExpanded ? (
+        <>
+          <Separator />
 
-      {isLoading ? (
-        <Skeleton className='h-10 w-1/4 max-w-[25%]' />
-      ) : (
-        <div className='flex w-1/4 max-w-[25%] flex-col gap-y-1.5'>
-          <span className='text-xs text-muted-foreground'>Vulnerabilities</span>
+          <div className='flex h-full w-full flex-col gap-y-2.5 px-3'>
+            <p className='font-semibold'>Vulnerabilities</p>
 
-          <div className='flex gap-x-2.5'>
-            <span className='w-1/3 text-left text-sm font-semibold text-green-400'>
-              {lowSeverityCount} Low
-            </span>
-            <span className='w-1/3 text-center text-sm font-semibold text-yellow-400'>
-              {mediumSeverityCount} Medium
-            </span>
-            <span className='w-1/3 text-right text-sm font-semibold text-red-400'>
-              {highSeverityCount} High
-            </span>
+            <ul className='flex h-full w-full flex-col gap-y-5'>
+              {fileVulnerabilities?.map((vulnerability, index) => (
+                <li
+                  key={index}
+                  className='flex h-auto w-full flex-col gap-y-2.5 rounded-md border border-border bg-muted/35 p-2.5'
+                >
+                  <p
+                    className={cn('overflow-x-auto whitespace-nowrap text-sm font-medium', {
+                      'text-green-400': vulnerability.severity === 'Low',
+                      'text-yellow-400': vulnerability.severity === 'Medium',
+                      'text-red-400': vulnerability.severity === 'High'
+                    })}
+                  >
+                    {vulnerability.title}
+                  </p>
+
+                  <div className='flex w-full gap-x-5'>
+                    <div className='flex w-1/2 flex-col gap-y-1.5 overflow-hidden'>
+                      <span className='text-xs text-muted-foreground'>Description</span>
+                      <Textarea
+                        value={vulnerability.description}
+                        className='h-40 resize-none focus-visible:ring-0'
+                      />
+                    </div>
+
+                    <div className='flex w-1/2 flex-col gap-y-1.5 overflow-hidden'>
+                      <span className='text-xs text-muted-foreground'>Recommendation</span>
+                      <Textarea
+                        value={vulnerability.recommendation}
+                        className='h-40 resize-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0'
+                      />
+                    </div>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
-        </div>
-      )}
+        </>
+      ) : null}
     </li>
   );
 }

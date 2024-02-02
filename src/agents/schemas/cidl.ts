@@ -2,6 +2,7 @@ import { z } from 'zod';
 
 // Solana specific fields are not supported yet.
 // Imports are not supported yet.
+// Extended types are not supported yet.
 
 const contactSchema = z.object({
   name: z.string().optional().describe('Name of the maintainer. Optional but recommended.'),
@@ -19,11 +20,29 @@ const licenseSchema = z.object({
   identifier: z.string().describe('SPDX identifier of the license. Specify UNLICENSE if not known.')
 });
 
+const nativeTypeSchema = z.union([
+  z.literal('string'),
+  z.literal('bytes'),
+  z.literal('bool'),
+  z.literal('u8'),
+  z.literal('u16'),
+  z.literal('u32'),
+  z.literal('u64'),
+  z.literal('u128'),
+  z.literal('u256'),
+  z.literal('i8'),
+  z.literal('i16'),
+  z.literal('i32'),
+  z.literal('i64'),
+  z.literal('i128'),
+  z.literal('i256'),
+  z.literal('f32'),
+  z.literal('f64')
+]);
+
 const fieldSchema = z.object({
   name: z.string().describe('Name of the field.'),
-  type: z
-    .union([z.literal('native'), z.literal('extended')])
-    .describe('Type of the field, either native or extended.'),
+  type: nativeTypeSchema.describe('Type of the field.'),
   description: z.string().describe('Description of the field.'),
   format: z.string().optional().describe('Format of the field, if applicable.'),
   attributes: z
@@ -39,9 +58,7 @@ const typeSchema = z.object({
 
 const inputSchema = z.object({
   name: z.string().describe('Name of the input parameter.'),
-  type: z
-    .union([z.literal('native'), z.literal('type'), z.literal('extended')])
-    .describe('Type of the input, can be native, type, or extended.'),
+  type: nativeTypeSchema.describe('Type of the input.'),
   description: z.string().describe('Description of the input parameter.')
 });
 

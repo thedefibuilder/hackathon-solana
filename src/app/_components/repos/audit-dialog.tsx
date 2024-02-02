@@ -22,6 +22,7 @@ import useAuditMethodology from '@/custom-hooks/use-audit-methodology';
 import useAuditSummary from '@/custom-hooks/use-audit-summary';
 import useAuditVulnerabilities from '@/custom-hooks/use-audit-vulnerabilities';
 
+import MarkdownViewer from '../markdown-viewer';
 import { TabContent } from '../tabs/content';
 import FileRow from '../tabs/file/row';
 import TabTrigger from '../tabs/trigger';
@@ -125,11 +126,11 @@ export default function AuditDialog({
             isLoading={isMethodologyLoading}
             isError={isMethodologyError}
           >
-            <p>{methodologyData}</p>
+            <MarkdownViewer source={methodologyData ?? ''} />
           </TabContent>
 
           <TabContent value={ETabs.summary} isLoading={isSummaryLoading} isError={isSummaryError}>
-            <p>{summaryData}</p>
+            <MarkdownViewer source={summaryData ?? ''} />
           </TabContent>
 
           <TabContent

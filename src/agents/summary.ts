@@ -9,7 +9,7 @@ import { ChatOpenAI } from '@langchain/openai';
 import { env } from '@/env';
 
 export const SUMMARY_SYSTEM_MESSAGE =
-  'Your task is to provide a executive summary for an auditing report.' +
+  'Your task is to provide a executive summary for an auditing report formatted as Markdown text.' +
   'The summary should contain only an overview of the rust smart contracts for the Solana blockchain, without including key findings and recommendations.' +
   'If not enough information is provided, just simply state that there is not enough information to provide a summary .';
 

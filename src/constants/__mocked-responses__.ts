@@ -238,8 +238,11 @@ const mockedFileVulnerabilities = {
   ]
 } satisfies TMockedFileVulnerabilities;
 
+const mockedCidlYaml =
+  'cidl: "0.8"\ninfo:\n  name: VotingSystem\n  title: Voting System Smart Contract\n  version: "1.0"\n  summary: A smart contract for managing a voting system on Solana. It supports\n    voter registration, casting votes, and tallying results.\n  contact:\n    name: Voting System Development Team\n    web: https://votingsystem.example.com\n    email: contact@votingsystem.example.com\n    git: https://github.com/votingsystem/voting-contract\n  license:\n    name: MIT\n    identifier: MIT\nmethods:\n  - name: registerVoter\n    version: "1.0"\n    summary: Registers a new voter in the system.\n    inputs:\n      - name: voterIdentity\n        type: string\n        description: A unique identifier for the voter, such as a public key or an email\n          address.\n  - name: castVote\n    version: "1.0"\n    summary: Allows a registered voter to cast a vote for a candidate.\n    inputs:\n      - name: voterIdentity\n        type: string\n        description: A unique identifier for the voter.\n      - name: candidateIdentifier\n        type: string\n        description: A unique identifier for the candidate being voted for.\n      - name: voteToken\n        type: string\n        description: A token representing the voter\'s right to cast a vote.\n  - name: tallyResults\n    version: "1.0"\n    summary: Tallies the votes and announces the results.\n    inputs: []\nerrors:\n  - id: VoterAlreadyRegistered\n    msg: The voter is already registered.\n  - id: VoteExceedsAllowance\n    msg: The number of votes cast exceeds the voter\'s allowance.\n' as const;
+
 type TMockedFileKey = (typeof mockedFiles)[number];
 type TMockedFileVulnerabilities = Record<TMockedFileKey, TVulnerability[]>;
 
 export type { TMockedFileKey };
-export { mockedSummary, mockedFiles, mockedFileVulnerabilities };
+export { mockedSummary, mockedFiles, mockedFileVulnerabilities, mockedCidlYaml };

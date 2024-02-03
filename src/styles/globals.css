@@ -40,4 +40,8 @@
   body {
     @apply flex h-full w-full flex-col bg-background text-foreground;
   }
+
+  .wmde-markdown a.anchor {
+    @apply !hidden;
+  }
 }

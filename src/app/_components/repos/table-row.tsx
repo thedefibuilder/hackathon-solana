@@ -5,7 +5,7 @@ import { type Octokit } from 'octokit';
 import { TableCell, TableRow } from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 
-import AuditDialog from './audit-dialog';
+import AuditDialog from '../audit/dialog';
 
 type TReposTableRowProperties = {
   octokit: Octokit;

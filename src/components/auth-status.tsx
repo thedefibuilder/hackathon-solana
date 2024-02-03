@@ -1,9 +1,11 @@
 'use client';
 
-import React, { ComponentProps, PropsWithChildren, ReactNode } from 'react';
+import React from 'react';
+
+import type { ComponentProps, PropsWithChildren, ReactNode } from 'react';
 
 import { Github, Loader2, ShieldAlert } from 'lucide-react';
-import { signIn, useSession } from 'next-auth/react';
+import { signIn } from 'next-auth/react';
 
 import { cn } from '@/lib/utils';
 
@@ -40,7 +42,6 @@ function AuthStatusContainer({
 }
 
 export default function AuthStatus() {
-  const { status } = useSession();
   const [isLoading, setIsLoading] = React.useState(false);
 
   function signInWithGithub() {

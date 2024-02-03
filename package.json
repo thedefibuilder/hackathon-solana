@@ -53,6 +53,7 @@
     "react-dom": "18.2.0",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
+    "yaml": "^2.3.4",
     "zod": "^3.22.4",
     "zod-to-json-schema": "^3.22.4"
   },

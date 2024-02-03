@@ -17,10 +17,10 @@ import {
 import { predefinedPrompts } from '@/constants/prompts';
 import { copyToClipboard } from '@/lib/clipboard';
 
-import CopyButton from './copy-button';
+import CopyButton from '../../../components/copy-button';
+import { Textarea } from '../../../components/ui/textarea';
+import { useToast } from '../../../components/ui/toast/use-toast';
 import PredefinedPromptsDialog from './prompts-dialog';
-import { Textarea } from './ui/textarea';
-import { useToast } from './ui/toast/use-toast';
 
 export default function CodigoDialog() {
   const [isClipboardApiSupported, setIsClipboardApiSupported] = useState(false);

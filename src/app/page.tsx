@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Octokit } from 'octokit';
 
-import CodigoDialog from '@/components/codigo-dialog';
+import CodigoDialog from '@/app/_components/codigo/dialog';
 import { getServerAuthSession } from '@/server/auth';
 import { db } from '@/server/db';
 

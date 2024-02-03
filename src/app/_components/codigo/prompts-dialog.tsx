@@ -10,7 +10,7 @@ import {
   DialogTrigger
 } from '@/components/ui/dialog';
 
-import { Button } from './ui/button';
+import { Button } from '../../../components/ui/button';
 
 type TPredefinedPromptsDialogProperties = {
   predefinedPrompts: TPrompt[];

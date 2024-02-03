@@ -1,4 +1,3 @@
-import type { TVulnerability } from '@/agents/audit';
 import type { NextRequest } from 'next/server';
 
 import { NextResponse } from 'next/server';

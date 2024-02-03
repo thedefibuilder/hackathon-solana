@@ -28,7 +28,7 @@ export default function CodigoDialog() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isGenerationLoading, setIsGenerationLoading] = useState(false);
   const [userPrompt, setUserPrompt] = useState('');
-  const [codigoYaml, setCodigoYaml] = useState('');
+  const [codigoYaml, setCodigoYaml] = useState<string | null>(null);
 
   const { toast } = useToast();
 
@@ -77,8 +77,12 @@ export default function CodigoDialog() {
   }
 
   function onDialogOpenChange(isOpen: boolean) {
+    if (isGenerationLoading) {
+      return;
+    }
+
     setUserPrompt('');
-    setCodigoYaml('');
+    setCodigoYaml(null);
     setIsDialogOpen(isOpen);
   }
 
@@ -89,24 +93,24 @@ export default function CodigoDialog() {
           <Image src={codigoLogo.src} alt='Codigo AI' width={24} height={24} className='h-6 w-6' />
         </Button>
       </DialogTrigger>
-      <DialogContent className='flex h-[calc(100%-5rem)] max-h-[calc(100%-5rem)] w-[calc(100%-5rem)] max-w-[calc(100%-5rem)] flex-col'>
-        <DialogHeader>
+      <DialogContent className='flex max-h-[calc(100%-5rem)] w-[500px] flex-col'>
+        <DialogHeader className='flex flex-row items-center justify-between pr-5'>
           <DialogTitle>Codigo YAML Generator</DialogTitle>
+
+          <PredefinedPromptsDialog
+            setUserPrompt={setUserPrompt}
+            predefinedPrompts={predefinedPrompts}
+          />
         </DialogHeader>
 
         <Textarea
           value={userPrompt}
-          placeholder={'Type the customisations for your CIDL file here.'}
-          className='mt-5 h-60 w-full resize-none rounded-3xl p-5 placeholder:italic'
+          placeholder='Type the customisations for your CIDL file here.'
+          className='h-60 w-full resize-none rounded-md p-2.5 placeholder:italic'
           onChange={(event) => setUserPrompt(event.target.value)}
         />
 
-        <PredefinedPromptsDialog
-          setUserPrompt={setUserPrompt}
-          predefinedPrompts={predefinedPrompts}
-        />
-
-        <Button disabled={isGenerationLoading} onClick={() => initGeneration()}>
+        <Button disabled={isGenerationLoading} onClick={initGeneration}>
           {isGenerationLoading ? (
             <div className='flex items-center gap-x-2.5'>
               <Loader2 className='animate-spin' />
@@ -117,21 +121,23 @@ export default function CodigoDialog() {
           )}
         </Button>
 
-        <div className='relative'>
-          <Textarea
-            value={codigoYaml}
-            placeholder={'CIDL file will be generated here.'}
-            className='h-96 w-full resize-none rounded-3xl p-5 placeholder:italic focus-visible:ring-0'
-            readOnly
-          />
-
-          {isClipboardApiSupported && (
-            <CopyButton
-              onClick={async () => copyToClipboard(codigoYaml)}
-              buttonClassName='absolute right-5 top-10'
+        {!isGenerationLoading && codigoYaml ? (
+          <div className='relative'>
+            <Textarea
+              value={codigoYaml}
+              placeholder={'CIDL file will be generated here.'}
+              className='h-96 w-full resize-none rounded-md p-2.5 placeholder:italic focus-visible:ring-0'
+              readOnly
             />
-          )}
-        </div>
+
+            {isClipboardApiSupported && (
+              <CopyButton
+                onClick={async () => copyToClipboard(codigoYaml)}
+                buttonClassName='absolute right-2.5 top-2.5'
+              />
+            )}
+          </div>
+        ) : null}
       </DialogContent>
     </Dialog>
   );

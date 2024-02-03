@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 
 import { Loader2 } from 'lucide-react';
+import Image from 'next/image';
 
 import codigoLogo from '@/assets/images/codigo-ai.png';
 import { Button } from '@/components/ui/button';
@@ -85,7 +86,7 @@ export default function CodigoDialog() {
     <Dialog open={isDialogOpen} onOpenChange={onDialogOpenChange}>
       <DialogTrigger asChild>
         <Button variant='secondary'>
-          <img src={codigoLogo.src} alt='Codigo AI' className='h-6 w-6' />
+          <Image src={codigoLogo.src} alt='Codigo AI' width={24} height={24} className='h-6 w-6' />
         </Button>
       </DialogTrigger>
       <DialogContent className='flex h-[calc(100%-5rem)] max-h-[calc(100%-5rem)] w-[calc(100%-5rem)] max-w-[calc(100%-5rem)] flex-col'>

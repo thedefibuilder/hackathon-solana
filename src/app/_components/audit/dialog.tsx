@@ -5,6 +5,7 @@ import React, { useState } from 'react';
 import type { ButtonProperties } from '@/components/ui/button';
 
 import { format } from 'date-fns';
+import { Loader2 } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -17,6 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import { Tabs, TabsList } from '@/components/ui/tabs';
 import { ETabs, fnsDateFormat } from '@/constants/misc';
+import useAuditDocument from '@/custom-hooks/use-audit-document';
 import useAuditFiles from '@/custom-hooks/use-audit-files';
 import useAuditMethodology from '@/custom-hooks/use-audit-methodology';
 import useAuditSummary from '@/custom-hooks/use-audit-summary';
@@ -26,6 +28,7 @@ import MarkdownViewer from '../markdown-viewer';
 import { TabContent } from '../tabs/content';
 import FileRow from '../tabs/file/row';
 import TabTrigger from '../tabs/trigger';
+import DownloadAuditButton from './download-button';
 
 const assessmentStartDate = format(new Date('Mon Jan 15 2024'), fnsDateFormat);
 const assessmentEndDate = format(new Date(), fnsDateFormat);
@@ -41,12 +44,6 @@ export default function AuditDialog({
   repoName,
   buttonProperties
 }: TAuditDialogProperties) {
-  /*
-    TODO
-    - Handle errors;
-    - Download Audit PDF Document;
-  */
-
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const {
@@ -81,6 +78,15 @@ export default function AuditDialog({
     resetVulnerabilitiesPromises
   } = useAuditVulnerabilities(filesData, ghUsername, repoName);
 
+  const { isAuditDocumentLoading, auditDocument } = useAuditDocument(
+    isMethodologyLoading,
+    methodologyData,
+    isSummaryLoading,
+    summaryData,
+    isFilesLoading,
+    vulnerabilitiesPromises
+  );
+
   function onDialogOpenChange(isOpen: boolean) {
     if (!isOpen) {
       resetMethodology();
@@ -107,11 +113,22 @@ export default function AuditDialog({
         </Button>
       </DialogTrigger>
       <DialogContent className='flex h-[calc(100%-5rem)] max-h-[calc(100%-5rem)] w-[calc(100%-5rem)] max-w-[calc(100%-5rem)] flex-col'>
-        <DialogHeader>
+        <DialogHeader className='relative'>
           <DialogTitle>Solana AI Auditor</DialogTitle>
           <DialogDescription>
             This assessment was conducted between {assessmentStartDate} and {assessmentEndDate}.
           </DialogDescription>
+
+          <div className='absolute -top-1 right-5'>
+            {isAuditDocumentLoading || !auditDocument ? (
+              <Button disabled>
+                <Loader2 className='h-5 w-5 animate-spin' />
+                Generating Audit
+              </Button>
+            ) : auditDocument ? (
+              <DownloadAuditButton auditDocument={auditDocument} />
+            ) : null}
+          </div>
         </DialogHeader>
 
         <Tabs defaultValue={ETabs.methodology} className='h-full w-full overflow-hidden'>

@@ -16,7 +16,7 @@ export default async function ReposTable({ octokit }: TReposTableProperties) {
   const userRepos = await getUserReposAction(octokit);
 
   return (
-    <section className='mx-auto max-h-full w-full max-w-7xl overflow-y-auto rounded-3xl border-2'>
+    <section className='mx-auto max-h-full w-full max-w-7xl overflow-y-auto rounded-md border-2'>
       <Table className='relative overflow-y-auto'>
         <TableHeader className='sticky top-0 z-[1] bg-background'>
           <TableRow>

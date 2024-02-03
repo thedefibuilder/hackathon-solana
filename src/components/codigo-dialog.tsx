@@ -13,9 +13,11 @@ import {
   DialogTitle,
   DialogTrigger
 } from '@/components/ui/dialog';
+import { predefinedPrompts } from '@/constants/prompts';
 import { copyToClipboard, isClipboardApiSupported } from '@/lib/clipboard';
 
 import CopyButton from './copy-button';
+import PredefinedPromptsDialog from './prompts-dialog';
 import { Textarea } from './ui/textarea';
 import { useToast } from './ui/toast/use-toast';
 
@@ -77,7 +79,6 @@ export default function CodigoDialog() {
       <Dialog open={isDialogOpen} onOpenChange={onDialogOpenChange}>
         <DialogTrigger asChild>
           <Button variant='secondary'>
-            {/* TODO: use next/image */}
             <img src={codigoLogo.src} alt='Codigo AI' className='h-6 w-6' />
           </Button>
         </DialogTrigger>
@@ -91,6 +92,11 @@ export default function CodigoDialog() {
             placeholder={'Type the customisations for your CIDL file here.'}
             className='mt-5 h-60 w-full resize-none rounded-3xl p-5 placeholder:italic'
             onChange={(event) => setUserPrompt(event.target.value)}
+          />
+
+          <PredefinedPromptsDialog
+            setUserPrompt={setUserPrompt}
+            predefinedPrompts={predefinedPrompts}
           />
 
           <Button disabled={isGenerationLoading} onClick={() => initGeneration()}>
@@ -108,7 +114,7 @@ export default function CodigoDialog() {
             <Textarea
               value={codigoYaml}
               placeholder={'CIDL file will be generated here.'}
-              className='mt-5 h-96 w-full resize-none rounded-3xl p-5 placeholder:italic'
+              className='h-96 w-full resize-none rounded-3xl p-5 placeholder:italic focus-visible:ring-0'
               readOnly
             />
 

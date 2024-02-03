@@ -3,7 +3,6 @@ import React from 'react';
 import { type Octokit } from 'octokit';
 
 import { TableCell, TableRow } from '@/components/ui/table';
-import { cn } from '@/lib/utils';
 
 import AuditDialog from '../audit/dialog';
 
@@ -20,15 +19,10 @@ export default async function ReposTableRow({
   name,
   visibility
 }: TReposTableRowProperties) {
-  const repoTree = await getRepoTreeAction(octokit, ghUsername, name);
-  const isRepoAuditable = repoTree?.data.tree.some((file) => file.path?.includes('Anchor.toml'));
+  const isRepoAuditable = await isRepoAuditableAction(octokit, ghUsername, name);
 
   return (
-    <TableRow
-      className={cn({
-        'cursor-not-allowed opacity-50 hover:!bg-transparent focus:!bg-transparent': !repoTree
-      })}
-    >
+    <TableRow>
       <TableCell className='font-medium'>{name}</TableCell>
       <TableCell>{ghUsername}</TableCell>
       <TableCell>{visibility}</TableCell>
@@ -43,26 +37,17 @@ export default async function ReposTableRow({
   );
 }
 
-async function getRepoTreeAction(octokit: Octokit, ghUsername: string, repoName: string) {
+async function isRepoAuditableAction(octokit: Octokit, ghUsername: string, repoName: string) {
   'use server';
 
-  let repoTree = null;
-
   try {
-    const repoDetails = await octokit.rest.repos.get({
+    const languages = await octokit.rest.repos.listLanguages({
       owner: ghUsername,
       repo: repoName
     });
 
-    repoTree = await octokit.rest.git.getTree({
-      owner: ghUsername,
-      repo: repoName,
-      tree_sha: repoDetails.data.default_branch,
-      recursive: 'true'
-    });
+    return languages.data.Rust === undefined ? false : true;
   } catch (error: unknown) {
-    console.error('ERROR FETCHING REPO TREE', error);
+    console.error('ERROR FETCHING LANGUAGES', error);
   }
-
-  return repoTree;
 }

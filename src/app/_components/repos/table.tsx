@@ -52,7 +52,8 @@ async function getUserReposAction(octokit: Octokit) {
     userRepos = await octokit.request('GET /user/repos', {
       headers: {
         'X-GitHub-Api-Version': '2022-11-28'
-      }
+      },
+      visibility: 'public'
     });
   } catch (error: unknown) {
     console.error('ERROR FETCHING REPOS', error);

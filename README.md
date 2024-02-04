@@ -5,8 +5,8 @@
 Our project introduces an innovative AI Auditor 🤖 designed specifically for Solana projects. Leveraging cutting-edge AI technologies, this tool analyzes project structures to identify vulnerabilities, categorizing them into high, medium, and low risk. It not only highlights these vulnerabilities but also provides actionable recommendations and summarizes the audited protocol. Moreover, our AI Auditor is capable of generating comprehensive PDF audit reports 📄 and automating the creation of GitHub issues for identified vulnerabilities, pinpointing their exact locations in the codebase.
 
 - Try LIVE APP 🖥 https://solana.defibuilder.com
-- Pitch Deck 🖼 TBA
-- Demo video 📸 TBA
+- Pitch Deck 🖼 https://drive.google.com/file/d/1-AydI2AgVNSyHDwwEEnvjrsDtYDYvXbd/view
+- Demo video 📸 https://www.youtube.com/watch?v=b8bbak8E-B8
 
 ## Goals 🎯
 

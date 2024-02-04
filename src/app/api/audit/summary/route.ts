@@ -1,10 +1,10 @@
+/* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 import type { NextRequest } from 'next/server';
 
 import { NextResponse } from 'next/server';
 import { Octokit } from 'octokit';
 
-import { fileAgent, fileAgentSchema } from '@/agents/file';
-import { SUMMARY_SYSTEM_MESSAGE, summaryAgent } from '@/agents/summary';
+import { summaryAgent } from '@/agents/summary';
 import { mockedSummary } from '@/constants/__mocked-responses__';
 import { env } from '@/env';
 import { getServerAuthSession } from '@/server/auth';
@@ -42,14 +42,17 @@ export async function POST(request: NextRequest) {
         recursive: 'true'
       });
 
-      const allFiles = projectTree.data.tree
-        .filter((item) => item.type == 'blob')
-        .map((file) => file.path);
-      const selectedFilesResponse = await fileAgent().invoke({
-        task: SUMMARY_SYSTEM_MESSAGE,
-        files: allFiles
-      });
-      const selectedFiles = fileAgentSchema.parse(selectedFilesResponse).files;
+      const selectedFiles = projectTree.data.tree
+        .filter(
+          (item) =>
+            item.type == 'blob' &&
+            (item.path?.endsWith('.rs') ||
+              item.path?.endsWith('.md') ||
+              item.path?.endsWith('.toml') ||
+              item.path?.endsWith('.yaml') ||
+              item.path?.endsWith('.yml'))
+        )
+        .map((file) => file.path) as string[];
 
       const selectedFilesContent = await Promise.all(
         selectedFiles.map(async (file) => {

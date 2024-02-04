@@ -1,12 +1,14 @@
-# DeFi Builder | Solana Hackathon
+# DeFi Builder | Solana Hackathon 
 
-## Overview
+## Overview 📖
 
-Our project introduces an innovative AI Auditor designed specifically for Solana projects. Leveraging cutting-edge AI technologies, this tool analyzes project structures to identify vulnerabilities, categorizing them into high, medium, and low risk. It not only highlights these vulnerabilities but also provides actionable recommendations and summarizes the audited protocol. Moreover, our AI Auditor is capable of generating comprehensive PDF audit reports and automating the creation of GitHub issues for identified vulnerabilities, pinpointing their exact locations in the codebase.
+Our project introduces an innovative AI Auditor 🤖 designed specifically for Solana projects. Leveraging cutting-edge AI technologies, this tool analyzes project structures to identify vulnerabilities, categorizing them into high, medium, and low risk. It not only highlights these vulnerabilities but also provides actionable recommendations and summarizes the audited protocol. Moreover, our AI Auditor is capable of generating comprehensive PDF audit reports 📄 and automating the creation of GitHub issues for identified vulnerabilities, pinpointing their exact locations in the codebase.
 
-!!! TBA: Images or demo video
+- Try LIVE APP 🖥 https://solana.defibuilder.com
+- Pitch Deck 🖼 TBA
+- Demo video 📸 TBA
 
-## Goals
+## Goals 🎯
 
 - **Vulnerability Identification**: Automatically detect vulnerabilities within the project structure, classifying them based on severity.
 - **Recommendation Generation**: Provide tailored recommendations for addressing identified vulnerabilities.
@@ -15,14 +17,14 @@ Our project introduces an innovative AI Auditor designed specifically for Solana
 - **GitHub Integration**: Streamline remediation processes by opening GitHub issues for specific vulnerabilities, including precise code location references.
 - **Codigo Interface Description Language Generator**: For projects not yet developed, our tool includes a generator for creating interface descriptions in YAML, ensuring compliance with Solana specifications. This facilitates rapid development of boilerplate code, client types, and documentation.
 
-## Features
+## Features 🌟
 
 - **GitHub Authentication**: Securely connect with GitHub to select and audit repositories using the Anchor framework.
 - **AI-Powered Auditing**: Utilizing already crafted prompts and structured outputs for deep analysis and auditing.
 - **Automatic GitHub Issue Creation**: Employing automated issue reporting on GitHub, directly linking to vulnerabilities in the code.
 - **Codigo Generator**: Generate interface descriptions in YAML, validated for compliance, to support the development of Solana projects.
 
-## How It Works
+## How It Works 🔧
 
 1. **GitHub Connection**: Users begin by logging in with their GitHub account.
 2. **Repository Selection**: Users can select an existing repository for auditing or utilize our [example repository](https://github.com/urataps/solana-audit-examples/) for demonstration purposes.
@@ -34,7 +36,7 @@ For projects without an existing repository, our Codigo interface generator come
 - Generate a YAML file using our AI tool that validates the output so that it corresponds with the CIDL specifications.
 - Use the generated file in [Studio Codigo](https://studio.codigo.ai) with the command `codigo solana generate cidl.yaml` to produce boilerplate code and documentation.
 
-## Technology Stack
+## Technology Stack 💻
 
 - **Frontend**: Next.js with TailwindCSS, Shadcn for styling.
 - **Backend**: Next.js, utilizing several endpoints for auditing functionalities.
@@ -42,9 +44,9 @@ For projects without an existing repository, our Codigo interface generator come
 - **AI Integration**: LangChain for AI-driven analysis.
 - **GitHub Integration**: Octokit for GitHub API interactions.
 
-## Getting Started
+## Getting Started 🚀
 
-To begin using our AI Auditor for your Solana projects visit the [LIVE APP !!! Link TBA](https://www.youtube.com/watch?v=dQw4w9WgXcQ). In order to test it locally follow the steps below. Check `env.example` for required environment setup.
+To begin using our AI Auditor for your Solana projects visit the [LIVE APP](https://solana.defibuilder.com). In order to test it locally follow the steps below. Check `env.example` for required environment setup.
 
 ```
 git clone git@github.com:thedefibuilder/hackathon-solana.git

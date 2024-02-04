@@ -10,6 +10,7 @@ import { env } from '@/env';
 import { getServerAuthSession } from '@/server/auth';
 import { db } from '@/server/db';
 
+export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
 export type TSummaryRequest = {

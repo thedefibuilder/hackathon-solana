@@ -8,6 +8,7 @@ import cidlJsonSchema from '@/agents/schemas/cidl';
 import { mockedCidlYaml } from '@/constants/__mocked-responses__';
 import { env } from '@/env';
 
+export const maxDuration = 300;
 export const dynamic = 'force-dynamic';
 
 export type TCodigoGenerateRequest = {

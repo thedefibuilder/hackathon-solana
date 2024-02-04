@@ -10,7 +10,6 @@ import { env } from '@/env';
 import { getServerAuthSession } from '@/server/auth';
 import { db } from '@/server/db';
 
-export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 
 export type TVulnerabilityRequest = {

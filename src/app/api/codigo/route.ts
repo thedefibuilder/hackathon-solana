@@ -8,6 +8,9 @@ import cidlJsonSchema from '@/agents/schemas/cidl';
 import { mockedCidlYaml } from '@/constants/__mocked-responses__';
 import { env } from '@/env';
 
+export const runtime = 'edge';
+export const dynamic = 'force-dynamic';
+
 export type TCodigoGenerateRequest = {
   prompt: string;
 };

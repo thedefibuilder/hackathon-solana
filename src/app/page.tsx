@@ -1,8 +1,10 @@
 import React from 'react';
 
+import Image from 'next/image';
 import { Octokit } from 'octokit';
 
 import CodigoDialog from '@/app/_components/codigo/dialog';
+import solanaLogo from '@/assets/images/solana.png';
 import AuthStatus from '@/components/auth-status';
 import { getServerAuthSession } from '@/server/auth';
 import { db } from '@/server/db';
@@ -29,7 +31,10 @@ export default async function Home() {
       {account ? (
         <div className='mx-auto flex h-full max-h-full w-full max-w-7xl flex-col items-center justify-center overflow-hidden p-5'>
           <div className='flex w-full items-start justify-between pb-5'>
-            <h1 className='text-3xl'>Solana AI Auditor</h1>
+            <div className='flex items-center'>
+              <Image src={solanaLogo.src} alt='Solana' width={24} height={24} />
+              <h1 className='ml-2 text-3xl'>Solana AI Auditor</h1>
+            </div>
 
             <div className='flex justify-between gap-x-2.5'>
               <div className='flex flex-col'>

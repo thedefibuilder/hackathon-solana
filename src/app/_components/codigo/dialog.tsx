@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 
-import codigoLogo from '@/assets/images/codigo-ai.png';
+import codigoLogo from '@/assets/images/codigo.png';
 import { Button } from '@/components/ui/button';
 import {
   Dialog,

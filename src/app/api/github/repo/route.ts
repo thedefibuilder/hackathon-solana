@@ -13,10 +13,18 @@ export type TGithubRepoRequest = {
 };
 
 export async function POST(request: NextRequest) {
+  const session = await getServerAuthSession();
+
+  if (!session) {
+    return NextResponse.json(
+      { data: 'You must be logged in to access this route!' },
+      { status: 401 }
+    );
+  }
+
   try {
     const body = (await request.json()) as TGithubRepoRequest;
     const { repoName, ghUsername, cidlYaml } = body;
-    const session = await getServerAuthSession();
     const account = await db.account.findFirstOrThrow({
       where: {
         userId: session?.user.id

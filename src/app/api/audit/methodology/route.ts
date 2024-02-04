@@ -2,7 +2,18 @@ import type { NextRequest } from 'next/server';
 
 import { NextResponse } from 'next/server';
 
+import { getServerAuthSession } from '@/server/auth';
+
 export async function GET(_request: NextRequest) {
+  const session = await getServerAuthSession();
+
+  if (!session) {
+    return NextResponse.json(
+      { data: 'You must be logged in to access this route!' },
+      { status: 401 }
+    );
+  }
+
   try {
     const methodology =
       '## Audit Methodology\n\n' +
